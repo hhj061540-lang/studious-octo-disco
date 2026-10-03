@@ -3,7 +3,10 @@ FROM node:22-bookworm-slim
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends wget \
+    && apt-get install -y --no-install-recommends \
+       wget \
+       ca-certificates \
+    && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O server.js \
@@ -15,7 +18,7 @@ RUN npm init -y \
 RUN mkdir -p public \
     && cp node_modules/@xterm/xterm/css/xterm.css public/xterm.css
 
-RUN node -e "const fs=require('fs'); const p=require('./package.json'); p.type='module'; fs.writeFileSync('package.json', JSON.stringify(p,null,2)+'\\n')"
+RUN node -e "const fs=require('fs');const p=require('./package.json');p.type='module';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
 
 ENV NODE_ENV=production
 ENV PORT=8787
